@@ -14,3 +14,6 @@ Check printf, syslog and others similar for format strings vulnerabilities.
 Check and recheck bounds-checks, this mean even if a bound-check exists analyze it because sometimes is not good enough.
 
 Search for loops and loops within loops that process user-defined inputs.
+
+strncat function and others that null-terminates its output can lead to off-by-one vulnerability.
+
