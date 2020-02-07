@@ -6,3 +6,81 @@ Common errors include:
 - Write outside array bounds
 - Off-by-one errors
 - Improper data sanitization
+
+Unbounded string copies
+Occur when data is copied from a unbounded source toa fixed length character array
+1. void main(void) {
+2. char Password[80];
+3. puts("Enter 8 character password:");
+4. gets(Password);
+...
+5. }
+
+It is easy to make errors when copying and concatenating strings because standard functions do not know the size of the destination buffer
+1. int main(int argc, char *argv[]) {
+2. char name[2048];
+3. strcpy(name, argv[1]);
+4. strcat(name, " = ");
+5. strcat(name, argv[2]);
+...
+6. }
+
+A solution is to test the length of the input using strlen() and dynamically allocate the memory
+1. int main(int argc, char *argv[]) {
+2. char *buff = (char *)malloc(strlen(argv[1])+1);
+3. if (buff != NULL) {
+4. strcpy(buff, argv[1]);
+5. printf("argv[1] = %s.\n", buff);
+6. }
+7. else {
+/* Couldn't get the memory - recover */
+8. }
+9. return 0;
+10. }
+
+
+Null-termination errors
+Another common problem with C-style strings is a failure to properly null terminate
+int main(int argc, char* argv[]) {
+char a[16];
+char b[16];
+char c[32];
+strncpy(a, "0123456789abcdef", sizeof(a)); (not properly terminated)
+strncpy(b, "0123456789abcdef", sizeof(b)); (not properly terminated)
+strncpy(c, a, sizeof(c));
+}
+
+Truncation
+Functions that restrict the number of bytes are often recommended to mitigate against buffer overflow vulnerabilities
+strncpy() instead of strcpy()
+fgets() instead of gets()
+snprintf() instead of sprintf()
+Strings that exceed the specified limits aretruncated
+Truncation results in a loss of data, and in some cases, to software vulnerabilities.
+
+Write Outside Array Bounds
+1. int main(int argc, char *argv[]) {
+2. int i = 0;
+3. char buff[128];
+4. char *arg1 = argv[1];
+5. while (arg1[i] != '\0' ) {
+6. buff[i] = arg1[i];
+7. i++;
+8. }
+9. buff[i] = '\0';
+10. printf("buff = %s\n", buff);
+11. }
+
+Off-by-One Errors
+Can you find all the off-by-one errors in this program?
+1. int main(int argc, char* argv[]) {
+2. char source[10];
+3. strcpy(source, "0123456789");
+4. char *dest = (char *)malloc(strlen(source));
+5. for (int i=1; i <= 11; i++) {
+6. dest[i] = source[i];
+7. }
+8. dest[i] = '\0';
+9. printf("dest = %s", dest);
+10. }
+
