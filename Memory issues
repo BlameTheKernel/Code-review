@@ -1,0 +1,67 @@
+Dynamic Memory Management Errors:
+Initialization errors
+Failing to check return values
+Writing to already freed memory
+Freeing the same memory multiple times
+Improperly paired memory management functions
+Failure to distinguish scalars and arrays
+Improper use of allocation functions
+
+Failing to check Return values
+VirtualAlloc() returns NULL, HeapAlloc() may return NULL or raise a structured exception.
+The standard malloc() function returns a NULL pointer if the requested space cannot be allocated.
+
+Once memory has been freed, it is still possible to read or write from its location if the memory pointer has not been set to null.
+
+An example of this programming error:
+for (p = head; p != NULL; p = p->next)
+  free(p);
+  
+The correct way to perform this operation is to save the required pointer before freeing:
+for (p = head; p != NULL; p = q) {
+  q = p->next;
+  free(p);
+}
+
+Reading from already freed memory almost always succeeds without a memory fault, because freed memory is recycled by the memory manager.
+There is no guarantee that the contents of the memory has not been altered.
+While the memory is usually not erased by a call to free(), memory managers may use some of the space to manage free or unallocated memory.
+If the memory chunk has been reallocated, the entire contents may have been replaced.
+
+These errors may go undetected because the contents of memory may be preserved during testing but eventually modified during operation.
+Writing to a memory location that has already been freed is also unlikely to result in a memory fault but could result in a number of serious problems.
+If the memory has been reallocated, a programmer may overwrite memory believing that a memory chunk is dedicated to a particular variable when in reality it is being shared.
+
+In this case, the variable contains whatever datawas written last.
+If the memory has not been reallocated, writing to a free chunk may overwrite and corrupt the data structures used by the memory manager.
+This can be used as the basis for an exploit when the data being written is controlled by an attacker.
+
+Freeing the same memory chunk more than once is dangerous because it can corrupt the data structures in the memory manager in a manner that is not immediately apparent.
+1. x = malloc(n * sizeof(int));
+2. /* manipulate x */
+3. free(x);
+4. y = malloc(n * sizeof(int));
+5. /* manipulate y */
+6. free(x);
+
+Improper use of Allocation functions:
+malloc(0)
+A border condition that can lead to memory management errors using the malloc() function is zero-length allocations.
+If the size of the space requested is zero, a C runtime library can return a NULL pointer.
+The safest and most portable solution is to ensure zero-length allocation requests are not made.
+
+alloca()
+Allocates memory in the stack frame of the caller.
+This memory is automatically freed when the function that called alloca() returns.
+Returns a pointer to the beginning of the allocated space.
+Implemented as an in-line function consisting of a single instruction to adjust the stack pointer.
+Does not return a null error and can make allocations that exceed the bounds of the stack.
+
+Programmers may also become confused because having to free() calls to malloc() but not to alloca().
+Calling free() on a pointer not obtained by calling calloc() or malloc() is a serious error.
+The use of alloca() is discouraged.
+It should not be used with large or unbounded allocations.
+
+Dynamically allocated memory is vulnerable to buffer overflows.
+Exploiting a buffer overflow in the heap is generally considered more difficult than smashing the stack.
+Buffer overflows can be used to corrupt data structures used by the memory manager to execute arbitrary code.
