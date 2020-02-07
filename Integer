@@ -1,0 +1,68 @@
+Integer error conditions
+
+Integer operations can resolve to unexpected values as a result of an
+- overflow
+- sign error
+- truncation
+
+- Overflow
+An integer overflow occurs when an integer is increased beyond its maximum value or decreased beyond its minimum value.
+Overflows can be signed or unsigned
+A signed overflow occurs when a value is carried over to the sign bit
+An unsigned overflow occurs when the underlying representation can no longer represent a value
+
+- Truncation Errors
+Truncation errors occur when an integer is converted to a smaller integer type and the value of the original integer is outside the range of the smaller type
+Low-order bits of the original value are preserved and the high-order bits are lost.
+
+- Sign Errors
+Converting an unsigned integer to a signed integer of
+Equal size - preserve bit pattern; high-order bit becomes sign bit
+Greater size - the value is zero-extended then converted
+Lesser size - preserve low-order bits
+
+If the high-order bit of the unsigned integer is
+Not set - the value is unchanged
+Set - results in a negative value
+
+Converting a signed integer to an unsigned integer of
+Equal size - bit pattern of the original integer is preserved
+Greater size - the value is sign-extended then converted
+Lesser size - preserve low-order bits
+
+If the value of the signed integer is
+Not negative - the value is unchanged
+Negative - the result is typically a large positive value
+
+
+- Integer overflow
+Based on a real-world vulnerability in the handling of the comment field in JPEG files.
+Comment field includes a two-byte length field indicating the length of the comment, including the two-byte length field.
+To determine the length of the comment string (for memory allocation), the function reads the value in the length field and subtracts two.
+The function then allocates the length of the comment plus one byte for the terminating null byte.
+
+With memory allocation
+Integer overflow can occur in calloc() and other memory allocation functions when computing the size of a memory region.
+A buffer smaller than the requested size is returned, possibly resulting in a subsequent buffer overflow.
+The following code fragments may lead to vulnerabilities:
+C: p = calloc(sizeof(element_t), count);
+C++: p = new ElementType[count];
+
+The calloc() library call accepts two arguments:
+the storage size of the element type.
+the number of elements.
+The element type size is not specified explicitly in the case of new operator in C++.
+To compute the size of the memory required, the storage size is multiplied by the number of elements.
+
+If the result cannot be represented in a signed integer, the allocation routine can appear to succeed but allocate an area that is too small.
+The application can write beyond the end of the allocated buffer resulting in a heap-based buffer overflow.
+
+
+
+
+
+
+
+
+
+
