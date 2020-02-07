@@ -1,0 +1,8 @@
+Programming with C-style strings, in C or C++, is error prone.
+Common errors include:
+􀂃 Unbounded string copies
+􀂃 Null-termination errors
+􀂃 Truncation
+􀂃 Write outside array bounds
+􀂃 Off-by-one errors
+􀂃 Improper data sanitization
