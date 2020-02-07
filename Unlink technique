@@ -1,0 +1,22 @@
+Introduced by Solar Designer.
+Used against versions of Netscape browsers, traceroute, and slocate that used dlmalloc.
+Used to exploit a buffer overflow to manipulate the boundary tags on chunks of memory to trick the unlink macro into writing four bytes of data to an arbitrary location.
+
+The program accepts a single string argument that is copied into first. 
+Code vulnerable:
+1. #include <stdlib.h>
+2. #include <string.h>
+3. int main(int argc, char *argv[]) {
+4. char *first, *second, *third;
+5. first = malloc(666); (memory allocation chunk 1)
+6. second = malloc(12); (memory allocation chunk 2)
+7. third = malloc(12); (memory allocation chunk 3)
+8. strcpy(first, argv[1]); (this unbounded strcpy() operation is susceptible to a buffer overflow
+9. free(first); (the program calls free() to deallocate the first chunk of memory)
+10. free(second); (If the second chunk is unallocated, the free() operation will attempt to consolidate it with the first chunk.)
+11. free(third); (To determine whether the second chunk is unallocated, free() checks the PREV_INUSE bit of the third chunk)
+12. return(0);
+13. }
+
+
+TO DO
