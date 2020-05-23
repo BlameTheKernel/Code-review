@@ -12,6 +12,7 @@ One of the main disadvantages of the C language and its derivates is the lack of
 - Check the size of the input string.
 - Search for loops, parsing loops and loops-within-loops, that process user-defined inputs.
 - strncat function and others that null-terminates its output can lead to off-by-one vulnerability.
+- Strings must finish with a null byte, check it.
 
 When auditing, check for the following:
 - Integer type ranges are properly checked.
