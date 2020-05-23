@@ -7,6 +7,7 @@ One of the main disadvantages of the C language and its derivates is the lack of
 - Look for random functions. (not enough randomness?)
 - Look for strcpy, sprintf, strcat, gets and other similar function that doesn¡t check the size of their destination buffers. Check if the destination buffers are properly allocated or has verification of the input size before copying.
 - Check printf, syslog and others similar for format strings vulnerabilities.
+- You can find a possibly format string vulnerability but it's needed to trace back the flow of data to see if the attacker has control over the input.
 - Check and recheck bounds-checks, this mean even if a bound-check exists analyze it because sometimes is not good enough.
 - Check the size of the input string.
 - Search for loops and loops within loops that process user-defined inputs.
