@@ -10,7 +10,7 @@ One of the main disadvantages of the C language and its derivates is the lack of
 - You can find a possibly format string vulnerability but it's needed to trace back the flow of data to see if the attacker has control over the input.
 - Check and recheck bounds-checks, this mean even if a bound-check exists analyze it because sometimes is not good enough.
 - Check the size of the input string.
-- Search for loops and loops within loops that process user-defined inputs.
+- Search for loops, parsing loops and loops-within-loops, that process user-defined inputs.
 - strncat function and others that null-terminates its output can lead to off-by-one vulnerability.
 
 When auditing, check for the following:
